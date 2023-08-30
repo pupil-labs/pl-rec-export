@@ -7,7 +7,7 @@ In addition, it performs post-hoc blink and fixation detection, and exports the 
 as CSV.
 
 ```
-Usage: rec-export.py [OPTIONS] [RECORDINGS]...
+Usage: pl-rec-export [OPTIONS] [RECORDINGS]...
 
 Options:
   -e, --export-folder TEXT      Relative export path  [default:
@@ -33,6 +33,9 @@ Options:
 1. Install Python 3.8 or higher
 2. ```bash
    pip install -e https://github.com/pupil-labs/pl-rec-export`
+   ```
+3. ```bash
+   pl-rec-export /path/to/rec
    ```
 
 **Note:**  The [`xgboost`](https://pypi.org/project/xgboost/) Python dependency might
