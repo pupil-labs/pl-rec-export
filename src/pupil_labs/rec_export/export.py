@@ -15,6 +15,7 @@ from rich.logging import RichHandler
 from rich.progress import Progress, track
 from rich.traceback import install
 
+from . import __version__
 from .explib import neon
 from .explib.blinks import detect_blinks_match_before_optic_flow
 from .explib.calibration import InvisibleCalibration, NeonCalibration
@@ -61,6 +62,7 @@ def main(
     blinks: bool,
     fixations: bool,
 ):
+    click.echo(f"pl-rec-export version: {__version__}", err=True)
     _setup_logging(verbose_option_count=verbose)
     if not recordings:
         logging.error("No recordings provided")
