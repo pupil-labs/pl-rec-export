@@ -1,6 +1,5 @@
-from itertools import islice
 from pathlib import Path
-from typing import Generator
+from typing import Generator, Union
 
 import numpy as np
 
@@ -66,7 +65,7 @@ def imu_packets_to_numpy(packets: Generator[imu_pb2.ImuPacket, None, None]):
     return np.array(data, dtype=imu_dtype)
 
 
-def raw_imu_file_to_packets(file_path: str | Path):
+def raw_imu_file_to_packets(file_path: Union[str, Path]):
     with Path(file_path).open("rb") as handle:
         packets = (
             imu_pb2.ImuPacket.FromString(packet_bytes)
@@ -75,6 +74,6 @@ def raw_imu_file_to_packets(file_path: str | Path):
         yield from packets
 
 
-def raw_imu_file_to_numpy(file_path: str | Path):
+def raw_imu_file_to_numpy(file_path: Union[str, Path]):
     packet_iterator = raw_imu_file_to_packets(file_path)
     return imu_packets_to_numpy(packet_iterator)

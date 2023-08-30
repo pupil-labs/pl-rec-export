@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import cast
+from typing import Union, cast
 
 import numpy as np
 import numpy.typing as npt
@@ -24,7 +24,7 @@ class Calibration:
     dtype: np.dtype
 
     @classmethod
-    def from_file(cls, file_path: Path | str):
+    def from_file(cls, file_path: Union[Path, str]):
         file = Path(file_path)
         return cls.from_binary(file.open("rb").read())
 

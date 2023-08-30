@@ -43,6 +43,15 @@ require you to install further non-Python dependencies. If this is the case, it 
 tell you how during the install or when running the script.
 
 ## Changelog
+### 1.0.2
+
+- Python 3.8 compatibility
+
+
+### 1.0.1
+
+- Show version in cli
+
 
 ### 1.0.0
 
