@@ -6,7 +6,7 @@ from setuptools import find_packages, setup
 import versioneer
 
 # Package meta-data.
-NAME = "pupil-labs-recording-export"
+NAME = "pl-rec-export"
 DESCRIPTION = "Pupil Labs Recording Export Tool"
 URL = "https://github.com/pupil-labs/pl-rec-export/"
 EMAIL = "info@pupil-labs.com"
