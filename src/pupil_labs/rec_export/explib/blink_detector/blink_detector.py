@@ -4,7 +4,6 @@ from itertools import groupby, tee
 from pathlib import Path
 
 import cv2
-import joblib
 import numpy as np
 from more_itertools import convolve, windowed
 from xgboost import XGBClassifier
@@ -43,7 +42,8 @@ def blink_detection_pipeline(
     grid = create_grid(of_params.img_shape, of_params.grid_size)
 
     # load classifier
-    clf = joblib.load(str(clf_path))
+    clf = XGBClassifier()
+    clf.load_model(clf_path)
 
     images_timestamps = zip(zip(eye_left_images, eye_right_images), timestamps)
 

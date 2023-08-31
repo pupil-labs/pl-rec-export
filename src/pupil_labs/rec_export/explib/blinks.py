@@ -104,7 +104,8 @@ def detect_blinks_match_before_optic_flow(
 
         if is_neon_recording:
             clf_path = (
-                Path(__file__).resolve().parent / "blink_detector/weights/xgb_neon.sav"
+                Path(__file__).resolve().parent
+                / "blink_detector/weights/xgb_17_neon.json"
             )
             preprocess_frame = lambda frame: frame.resized(
                 (64, 64), gaze_pipeline_resize_method
@@ -112,7 +113,8 @@ def detect_blinks_match_before_optic_flow(
 
         else:
             clf_path = (
-                Path(__file__).resolve().parent / "blink_detector/weights/xgb.sav"
+                Path(__file__).resolve().parent
+                / "blink_detector/weights/xgb_17_invisible.json"
             )
 
             preprocess_frame = lambda frame: cv2.rotate(
