@@ -273,6 +273,9 @@ def _process_imu(recording: pathlib.Path, export_path: pathlib.Path) -> None:
         files_ts
     ), f"Inconsistent number of files: {files_raw=}, {files_ts=}"
 
+    if not files_raw:
+        logging.warning("No IMU data found. Skipping.")
+        return
     if is_neon(recording):
         process_imu_file = _process_neon_imu_file
     else:
