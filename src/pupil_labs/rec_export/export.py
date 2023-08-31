@@ -269,8 +269,8 @@ def _process_imu(recording: pathlib.Path, export_path: pathlib.Path) -> None:
     logging.debug(f"Processing IMU")
     files_raw = sorted(recording.glob("extimu ps*.raw"), key=_file_sorter_by_part)
     files_ts = sorted(recording.glob("extimu ps*.time"), key=_file_sorter_by_part)
-    assert (
-        len(files_raw) == len(files_ts) > 0
+    assert len(files_raw) == len(
+        files_ts
     ), f"Inconsistent number of files: {files_raw=}, {files_ts=}"
 
     if is_neon(recording):
