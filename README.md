@@ -1,6 +1,7 @@
 # Recording Export Utility
 
-This Python script extracts gaze, IMU, and template data from raw Invisible recordings.
+This utility extract data from raw recording files made on **Invisible** and **Neon** devices.
+
 Gaze and IMU data are exported as CSV files. Template data as json.
 
 In addition, it performs post-hoc blink and fixation detection, and exports the data
@@ -43,15 +44,22 @@ require you to install further non-Python dependencies. If this is the case, it 
 tell you how during the install or when running the script.
 
 ## Changelog
+
+### 1.0.4
+
+- Mac M1 compatibility
+
+### 1.0.3
+
+- Bug fixes
+
 ### 1.0.2
 
 - Python 3.8 compatibility
 
-
 ### 1.0.1
 
 - Show version in cli
-
 
 ### 1.0.0
 
