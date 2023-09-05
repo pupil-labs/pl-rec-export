@@ -31,7 +31,7 @@ Options:
 
 1. Install Python 3.8 or higher
 2. ```bash
-   pip install -e git+https://github.com/pupil-labs/pl-rec-export#pl-rec-export
+   pip install -e git+https://github.com/pupil-labs/pl-rec-export.git#egg=pl-rec-export
    ```
 3. ```bash
    pl-rec-export /path/to/rec
