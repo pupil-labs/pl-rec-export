@@ -22,12 +22,10 @@ Options:
 
 ## Caveats
 
-1. Requires untouched Pupil Invisible recordings. Does not work if they were opened in
-   Pupil Player
-2. Does not calculate IMU `roll [deg]`/`pitch [deg]` (yet)
+1. This script requires unaltered recordings that have been directly downloaded from Pupil Cloud or exported from the phone. It will not work on recordings that have been opened in Pupil Player.
+2. The script doesn't calculate IMU roll [deg], pitch [deg], or yaw [deg] as of now. Please note that yaw calculations would only be possible for Neon recordings.
 3. Does not handle incomplete recordings (missing/corrupted files)
-4. Locally detected fixations differ from Pupil Cloud exported fixations due to not
-   having access to the full 200 Hz gaze data
+4. Fixations detected locally might vary from those exported from Pupil Cloud. This is due to differences in real-time gaze inference when compared to the full 200 Hz gaze data available in the Cloud.
 
 ## Installation
 
