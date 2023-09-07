@@ -85,6 +85,9 @@ def process_recording(
         # Fix reported case of Click passing bytes instead of pathlib.Path
         recording = pathlib.Path(recording.decode("utf-8"))
     logging.info(f"Processing {recording.resolve()}")
+    logging.info(f"File list")
+    for file in sorted(recording.iterdir()):
+        logging.info(f"    {file.name.ljust(50)} - {file.stat().st_size}")
     export_path = recording / export_folder
     if export_path.exists():
         if force:
