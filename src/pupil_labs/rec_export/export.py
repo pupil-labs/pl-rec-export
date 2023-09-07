@@ -85,9 +85,7 @@ def process_recording(
         # Fix reported case of Click passing bytes instead of pathlib.Path
         recording = pathlib.Path(recording.decode("utf-8"))
     logging.info(f"Processing {recording.resolve()}")
-    logging.info(f"File list")
-    for file in sorted(recording.iterdir()):
-        logging.info(f"    {file.name.ljust(50)} - {file.stat().st_size}")
+
     export_path = recording / export_folder
     if export_path.exists():
         if force:
@@ -99,6 +97,28 @@ def process_recording(
             raise SystemExit(3)
     else:
         export_path.mkdir()
+
+    logging.info(f"File list")
+    for file in sorted(recording.iterdir()):
+        logging.info(f"    {file.name.ljust(50)} - {file.stat().st_size}")
+
+    try:
+        info = json.loads((recording / "info.json").read_text())
+    except json.JSONDecodeError:
+        logging.exception("info.json not valid")
+        return
+
+    logging.info(f"Recording info")
+    for key in [
+        "start_time",
+        "duration",
+        "data_format_version",
+        "gaze_offset",
+        "pipeline_version",
+        "scene_camera_serial_number",
+        "module_serial_number",
+    ]:
+        logging.info(f"    {key.ljust(50)}: {info.get(key)}")
 
     blink_thread = threading.Thread(
         target=_process_blinks, args=(recording, export_path, progress)
@@ -121,7 +141,7 @@ def process_recording(
     except FileNotFoundError:
         logging.exception(
             "Did not encounter expected files. "
-            "An unmodified Invisible recording is required."
+            "An unmodified Invisible or Neon recording is required."
         )
 
 

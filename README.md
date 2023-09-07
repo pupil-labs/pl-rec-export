@@ -42,6 +42,9 @@ require you to install further non-Python dependencies. If this is the case, it 
 tell you how during the install or when running the script.
 
 ## Changelog
+### 1.0.5
+
+- Logs add debugging information about recording
 
 ### 1.0.4
 
