@@ -97,7 +97,10 @@ def get_gaze_from_recording(rec_folder, progress: T.Optional[Progress] = None):
     timestamp_at_0 = rec.timestamp_at_offset(seconds=0)
     rec.seek(timestamp_at_0)
 
-    gaze_stream = rec.gaze200
+    gaze_stream = rec.gaze
+    if rec.gaze200.parts:
+        gaze_stream = rec.gaze200
+
     stream = gaze_stream.read(
         rec.timestamp_at_offset(seconds=0),
         rec.timestamp_at_offset(seconds=rec.duration_s),
