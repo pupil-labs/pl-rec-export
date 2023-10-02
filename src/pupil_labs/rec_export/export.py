@@ -1,19 +1,27 @@
 import json
 import logging
+import math
 import pathlib
 import re
 import threading
 import traceback
 from collections import defaultdict
+from itertools import chain
 from typing import List, Optional
 
 import click
 import numpy as np
 import pandas as pd
 import rich
+from more_itertools import pairwise
 from rich.logging import RichHandler
 from rich.progress import Progress, track
 from rich.traceback import install
+
+from pupil_labs.rec_export.explib.orientation import (
+    OrientationEstimation,
+    euler_from_quaternion,
+)
 
 from . import __version__
 from .explib import neon
@@ -333,7 +341,8 @@ def _process_pi_imu_file(raw: pathlib.Path, time: pathlib.Path) -> pd.DataFrame:
     ts = np.fromfile(time, dtype="<u8")
     assert coords.shape[0] == ts.shape[0], "Inconsistent IMU and time data"
     logging.debug(f"'{raw.stem}': {ts.shape[0]} data points")
-    return pd.DataFrame(
+
+    result = pd.DataFrame(
         {
             "timestamp [ns]": ts,
             "gyro x [deg/s]": coords[:, 0],
@@ -345,13 +354,45 @@ def _process_pi_imu_file(raw: pathlib.Path, time: pathlib.Path) -> pd.DataFrame:
         }
     )
 
+    orientation_estimation = OrientationEstimation()
+    rolls, pitches = [], []
+    for item, next_item in pairwise(chain(result.iterrows(), [None])):
+        if item is None:
+            break
+
+        idx, datum = item
+        duration_ns = 5e6
+        if next_item is not None:
+            duration_ns = next_item[1]["timestamp [ns]"] - datum["timestamp [ns]"]
+
+        orientation_estimation.update(
+            accel=[
+                datum["acceleration x [G]"],
+                datum["acceleration y [G]"],
+                datum["acceleration z [G]"],
+            ],
+            gyro=[
+                datum["gyro x [deg/s]"],
+                datum["gyro y [deg/s]"],
+                datum["gyro z [deg/s]"],
+            ],
+            duration_ns=duration_ns,
+        )
+        rolls.append(orientation_estimation.roll)
+        pitches.append(orientation_estimation.pitch)
+
+    result["roll [deg]"] = rolls
+    result["pitch [deg]"] = pitches
+    return result
+
 
 def _process_neon_imu_file(raw: pathlib.Path, time: pathlib.Path) -> pd.DataFrame:
     imu_data = neon.raw_imu_file_to_numpy(raw)
     ts = np.fromfile(time, dtype="<u8")
     assert imu_data.shape[0] == ts.shape[0], "Inconsistent IMU and time data"
     logging.debug(f"'{raw.stem}': {ts.shape[0]} data points")
-    return pd.DataFrame(
+
+    result = pd.DataFrame(
         {
             "timestamp [ns]": ts,
             "protots [ns]": imu_data["unix_time_ns"],
@@ -367,6 +408,27 @@ def _process_neon_imu_file(raw: pathlib.Path, time: pathlib.Path) -> pd.DataFram
             "quaternion z": imu_data["quaternion_z"],
         }
     )
+
+    deg_per_rad = 180 / math.pi
+    yaws, pitches, rolls = [], [], []
+    for idx, datum in result.iterrows():
+        roll_rad, pitch_rad, yaw_rad = euler_from_quaternion(
+            datum["quaternion x"],
+            datum["quaternion y"],
+            datum["quaternion z"],
+            datum["quaternion w"],
+        )
+        roll_deg = roll_rad * deg_per_rad
+        pitch_deg = pitch_rad * deg_per_rad
+        yaw_deg = yaw_rad * deg_per_rad
+        rolls.append(roll_deg)
+        pitches.append(pitch_deg)
+        yaws.append(yaw_deg)
+
+    result["roll [deg]"] = rolls
+    result["pitch [deg]"] = pitches
+    result["yaw [deg]"] = yaws
+    return result
 
 
 def _process_blinks(

@@ -23,9 +23,8 @@ Options:
 ## Caveats
 
 1. This script requires unaltered recordings that have been directly downloaded from Pupil Cloud or exported from the phone. It will not work on recordings that have been opened in Pupil Player.
-2. The script doesn't calculate IMU roll [deg], pitch [deg], or yaw [deg] as of now. Please note that yaw calculations would only be possible for Neon recordings.
-3. Does not handle incomplete recordings (missing/corrupted files)
-4. Fixations detected locally might vary from those exported from Pupil Cloud. This is due to differences in real-time gaze inference when compared to the full 200 Hz gaze data available in the Cloud.
+2. Does not handle incomplete recordings (missing/corrupted files)
+3. Fixations detected locally might vary from those exported from Pupil Cloud. This is due to differences in real-time gaze inference when compared to the full 200 Hz gaze data available in the Cloud.
 
 ## Installation
 
@@ -42,6 +41,12 @@ require you to install further non-Python dependencies. If this is the case, it 
 tell you how during the install or when running the script.
 
 ## Changelog
+
+### 1.0.7
+
+- Add roll/pitch/yaw to imu.csv
+- Add azimuth/elevation to fixations.csv
+- Allow processing of fixations when scene video is missing
 
 ### 1.0.6
 
