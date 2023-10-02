@@ -455,9 +455,15 @@ def _process_fixations(
         gaze.loc[gaze_mask, "fixation id"] = int(fixation["fixation id"])
 
         fixation_loc = gaze.loc[gaze_mask, ["gaze x [px]", "gaze y [px]"]].mean(axis=0)
+        azimuth_elevation_loc = gaze.loc[
+            gaze_mask, ["azimuth [deg]", "elevation [deg]"]
+        ].mean(axis=0)
         # .values is necessary here, otherwise pandas will try to match the row label
         # and fail the assignment
         events.loc[idx, ["fixation x [px]", "fixation y [px]"]] = fixation_loc.values
+        events.loc[
+            idx, ["azimuth [deg]", "elevation [deg]"]
+        ] = azimuth_elevation_loc.values
 
     gaze.to_csv(gaze_path, index=False)
     logging.info(f"Added fixation ids to '{gaze_path}'")
