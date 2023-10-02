@@ -241,11 +241,16 @@ def detect_fixations_neon(
         (smoothed_gaze_distorted_x, smoothed_gaze_distorted_y)
     ).T
     logger.info(f"Applied smoothing filter to gaze data.")
-
-    optic_flow_vectors_available = False
     optic_flow_vectors = optic_flow_correction.load_optic_flow_vectors(
         rec_folder, use_existing=use_cached_optic_flow, progress=progress
     )
+    if not len(optic_flow_vectors.ts):
+        optic_flow_vectors = optic_flow_correction.OpticFlow(
+            ts=time_axis,
+            x=np.zeros(len(time_axis), dtype=np.float32),
+            y=np.zeros(len(time_axis), dtype=np.float32),
+        )
+
     # upsample optic flow to the same time axis as the gaze data
     resampled_optic_x = (
         np.interp(
@@ -262,24 +267,6 @@ def detect_fixations_neon(
     optic_flow_vectors = optic_flow_correction.OpticFlow(
         ts=resampled_time_axis, x=resampled_optic_x, y=resampled_optic_y
     )
-
-    corrected_pixel_velocity = None
-    if not len(optic_flow_vectors.ts):
-        logger.warning("No optic flow vectors were available")
-    else:
-        optic_flow_vectors_available = True
-        corrected_pixel_velocity = helpers.get_pixel_velocity(
-            resampled_time_axis, smoothed_gaze_distorted
-        )
-
-    if not optic_flow_vectors_available:
-        logger.info(f"Calculated un-corrected gaze velocity in pixels/sec.")
-
-        corrected_pixel_velocity = optic_flow_correction.get_corrected_pixel_velocity(
-            optic_flow_vectors,
-            resampled_time_axis,
-            smoothed_gaze_distorted,
-        )
 
     # get corrected velocity
     corrected_pixel_velocity = optic_flow_correction.get_corrected_pixel_velocity(
