@@ -54,6 +54,7 @@ FILE_PATTERN = re.compile(r"(gaze|worn|extimu) ps(?P<part>\d*)\.(raw|time)")
 )
 @click.option("--blinks/--no-blinks", default=True)
 @click.option("--fixations/--no-fixations", default=True)
+@click.option("--pdb", is_flag=True, help="Run debugger on error")
 def main(
     recordings: List[pathlib.Path],
     export_folder: str,
@@ -61,16 +62,30 @@ def main(
     verbose: int,
     blinks: bool,
     fixations: bool,
+    pdb: bool,
 ):
-    click.echo(f"pl-rec-export version: {__version__}", err=True)
-    _setup_logging(verbose_option_count=verbose)
-    if not recordings:
-        logging.error("No recordings provided")
-        raise SystemExit(2)
-    logging.info(f"Processing {len(recordings)} recordings")
-    with Progress(transient=True) as progress:
-        for rec in progress.track(recordings, description="Processing recordings..."):
-            process_recording(rec, export_folder, force, progress, blinks, fixations)
+    try:
+        click.echo(f"pl-rec-export version: {__version__}", err=True)
+        _setup_logging(verbose_option_count=verbose)
+        if not recordings:
+            logging.error("No recordings provided")
+            raise SystemExit(2)
+        logging.info(f"Processing {len(recordings)} recordings")
+        with Progress(transient=True) as progress:
+            for rec in progress.track(
+                recordings, description="Processing recordings..."
+            ):
+                process_recording(
+                    rec, export_folder, force, progress, blinks, fixations
+                )
+    except Exception:
+        if pdb:
+            traceback.print_exc()
+            import pdb
+
+            pdb.post_mortem()
+        else:
+            raise
 
 
 def process_recording(
@@ -126,6 +141,7 @@ def process_recording(
     fixation_thread = threading.Thread(
         target=_process_fixations, args=(recording, export_path, progress)
     )
+
     try:
         _process_events(recording, export_path)
         _process_template(recording, export_path)
