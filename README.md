@@ -2,7 +2,7 @@
 
 This utility extract data from raw recording files made on **Invisible** and **Neon** devices.
 
-Gaze and IMU data are exported as CSV files. Template data as json.
+Gaze, IMU and world video data are exported as CSV files. Template data as json.
 
 In addition, it performs post-hoc blink and fixation detection, and exports the data
 as CSV.
@@ -41,6 +41,10 @@ require you to install further non-Python dependencies. If this is the case, it 
 tell you how during the install or when running the script.
 
 ## Changelog
+
+### 1.0.8
+
+- Add world video data export in world.csv
 
 ### 1.0.7
 

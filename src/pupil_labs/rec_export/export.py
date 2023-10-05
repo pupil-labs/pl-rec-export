@@ -34,7 +34,9 @@ from .explib.spherical_coordinates import cart_to_spherical, unproject_points
 
 install(show_locals=False, suppress=[pd, click, rich])
 
-FILE_PATTERN = re.compile(r"(gaze|worn|extimu) ps(?P<part>\d*)\.(raw|time)")
+FILE_PATTERN = re.compile(
+    r"(PI world v1|Neon Scene Camera v1|gaze|worn|extimu) ps(?P<part>\d*)\.(raw|time|time_aux)"
+)
 
 
 @click.command()
@@ -155,6 +157,7 @@ def process_recording(
         _process_template(recording, export_path)
         _process_gaze(recording, export_path)
         _process_imu(recording, export_path)
+        _process_world(recording, export_path)
         if blinks:
             blink_thread.start()
         if fixations:
@@ -467,6 +470,46 @@ def _process_blinks(
 
     export_path /= "blinks.csv"
     logging.info(f"Exporting blinks to '{export_path}'")
+    result.to_csv(export_path, index=False)
+
+
+def _process_world(
+    recording: pathlib.Path,
+    export_path: pathlib.Path,
+    progress: Optional[Progress] = None,
+) -> None:
+    metadata = json.loads((recording / "info.json").read_bytes())
+    start_time = metadata["start_time"]
+    export_path /= "world.csv"
+
+    ts_files = sorted(
+        list(recording.glob("PI world v1 ps*.time_aux"))
+        + list(recording.glob("Neon Scene Camera v1 ps*.time_aux")),
+        key=_file_sorter_by_part,
+    )
+    all_ts = []
+    filenames = []
+    video_offsets = []
+    for ts_file in ts_files:
+        part_ts = np.fromfile(ts_file, "<u8")
+        video_ts = part_ts - part_ts[0]
+        all_ts.append(part_ts)
+        filenames.append(len(part_ts) * [ts_file])
+        video_offsets.append(video_ts)
+
+    all_ts = np.concatenate(all_ts)
+    filenames = np.concatenate(filenames)
+    video_offsets = np.concatenate(video_offsets)
+
+    result = pd.DataFrame(
+        {
+            "file": filenames,
+            "timestamp [ns]": all_ts,
+            "recording offset [secs]": (all_ts - start_time) / 1e9,
+            "video offset [secs]": video_offsets / 1e9,
+        }
+    )
+    logging.info(f"Exporting world data to '{export_path}'")
     result.to_csv(export_path, index=False)
 
 
