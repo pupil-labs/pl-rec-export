@@ -487,6 +487,12 @@ def _process_world(
         + list(recording.glob("Neon Scene Camera v1 ps*.time_aux")),
         key=_file_sorter_by_part,
     )
+    if ts_files is None
+        ts_files = sorted(
+            list(recording.glob("PI world v1 ps*.time"))
+            + list(recording.glob("Neon Scene Camera v1 ps*.time")),
+            key=_file_sorter_by_part,
+        )
     all_ts = []
     filenames = []
     video_offsets = []
