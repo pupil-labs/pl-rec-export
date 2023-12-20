@@ -452,7 +452,8 @@ def _process_blinks(
 
     gaze_path = export_path / "gaze.csv"
     gaze = pd.read_csv(gaze_path, dtype={"fixation id": object, "blink id": object})
-    for idx, blink in progress.track(
+    track_fn = progress.track if progress else track
+    for idx, blink in track_fn(
         result.iterrows(),
         description="Adding blink ids to gaze.csv...",
         total=result.shape[0],
