@@ -455,7 +455,7 @@ def _process_blinks(
     for idx, blink in progress.track(
         result.iterrows(),
         description="Adding blink ids to gaze.csv...",
-        total=result.shape[1],
+        total=result.shape[0],
     ):
         gaze.loc[
             gaze["timestamp [ns]"].between(
@@ -556,7 +556,7 @@ def _process_fixations(
     for idx, fixation in track_fn(
         events.iterrows(),
         description="Adding fixation ids to gaze.csv...",
-        total=events.shape[1],
+        total=events.shape[0],
     ):
         gaze_mask = gaze["timestamp [ns]"].between(
             fixation["start timestamp [ns]"],
