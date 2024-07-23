@@ -42,6 +42,10 @@ tell you how during the install or when running the script.
 
 ## Changelog
 
+### 1.0.10
+
+- Use hardware timestamps for world.csv
+
 ### 1.0.9
 
 - Add support for recordings lacking .time_aux files 
