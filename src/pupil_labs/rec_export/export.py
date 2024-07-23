@@ -484,14 +484,14 @@ def _process_world(
     export_path /= "world.csv"
 
     ts_files = sorted(
-        list(recording.glob("PI world v1 ps*.time_aux"))
-        + list(recording.glob("Neon Scene Camera v1 ps*.time_aux")),
+        list(recording.glob("PI world v1 ps*.time"))
+        + list(recording.glob("Neon Scene Camera v1 ps*.time")),
         key=_file_sorter_by_part,
     )
     if len(ts_files) == 0:
         ts_files = sorted(
-            list(recording.glob("PI world v1 ps*.time"))
-            + list(recording.glob("Neon Scene Camera v1 ps*.time")),
+            list(recording.glob("PI world v1 ps*.time_aux"))
+            + list(recording.glob("Neon Scene Camera v1 ps*.time_aux")),
             key=_file_sorter_by_part,
         )
     all_ts = []
