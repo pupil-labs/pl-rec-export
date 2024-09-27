@@ -32,7 +32,6 @@ INSTALL_REQUIRES = [
     "rich",
     "opencv-python-headless",
     "PyTurboJPEG",
-    "protobuf",
     "xgboost==1.7.1",
     "diskcache",
     "sh",
@@ -40,6 +39,7 @@ INSTALL_REQUIRES = [
     "semver",
     "scikit-learn",
     "tqdm",
+    "pl-neon-recording"
 ]
 TESTS_REQUIRE = ["pytest"]
 
