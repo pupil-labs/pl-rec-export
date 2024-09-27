@@ -24,7 +24,7 @@ Options:
 
 1. This script requires unaltered recordings that have been directly downloaded from Pupil Cloud or exported from the phone. It will not work on recordings that have been opened in Pupil Player.
 2. Does not handle incomplete recordings (missing/corrupted files)
-3. Fixations detected locally might vary from those exported from Pupil Cloud. This is due to differences in real-time gaze inference when compared to the full 200 Hz gaze data available in the Cloud.
+3. Fixations and saccades detected locally might vary from those exported from Pupil Cloud. This is due to differences in real-time gaze inference when compared to the full 200 Hz gaze data available in the Cloud.
 
 ## Installation
 
@@ -48,7 +48,7 @@ tell you how during the install or when running the script.
 
 ### 1.0.9
 
-- Add support for recordings lacking .time_aux files 
+- Add support for recordings lacking .time_aux files
 - Fix issues with progress bars
 
 ### 1.0.8
