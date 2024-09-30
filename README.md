@@ -42,6 +42,10 @@ tell you how during the install or when running the script.
 
 ## Changelog
 
+### 1.0.11
+
+- Add support for exporting saccade data
+
 ### 1.0.10
 
 - Use hardware timestamps for world.csv
