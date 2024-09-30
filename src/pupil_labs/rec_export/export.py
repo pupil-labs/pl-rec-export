@@ -536,19 +536,54 @@ def _process_fixations(
         use_cached_optic_flow=True,
         progress=progress,
     )
-    events = pd.DataFrame(events).query("label == 'fixation'").reset_index(drop=True)
-    events.drop(columns=["label"], inplace=True)
+    events = pd.DataFrame(events)
+
+    # Common fields
     events.rename(
         columns={"start_t": "start timestamp [ns]", "end_t": "end timestamp [ns]"},
         inplace=True,
     )
+    events["duration [ms]"] = round(
+        (events["end timestamp [ns]"] - events["start timestamp [ns]"]) / 1e6
+    )
+
+    # Saccades
+    gap_events = events.query("label == 'gap'").reset_index(drop=True)
+    gap_events.index.rename("saccade id", inplace=True)
+    gap_events.reset_index("saccade id", inplace=True)
+    gap_events["saccade id"] += 1
+    gap_events.rename(
+        columns={
+            "amplitude_px": "amplitude [px]",
+            "amplitude_deg": "amplitude [deg]",
+            "mean_vel": "mean velocity [px/s]",
+            "peak_vel": "peak velocity [px/s]",
+        },
+        inplace=True,
+    )
+    gap_events.drop(
+        columns=[
+            "label",
+            "start_x",
+            "start_y",
+            "end_x",
+            "end_y",
+            "duration_sec",
+            "instance",
+        ],
+        inplace=True,
+    )
+    saccade_export_path = export_path / "saccades.csv"
+    logging.info(f"Exporting saccades to '{saccade_export_path}'")
+    gap_events.to_csv(saccade_export_path, index=False)
+
+    # Fixations
+    events = events.query("label == 'fixation'").reset_index(drop=True)
     events.index.rename("fixation id", inplace=True)
     events.reset_index("fixation id", inplace=True)
     events["fixation id"] += 1
     events["object conversion work around"] = None
-    events["duration [ms]"] = (
-        events["end timestamp [ns]"] - events["start timestamp [ns]"]
-    ) // 1_000_000
+
     events["fixation x [px]"] = 0.0
     events["fixation y [px]"] = 0.0
     gaze_path = export_path / "gaze.csv"
@@ -582,6 +617,7 @@ def _process_fixations(
 
     events.drop(
         columns=[
+            "label",
             "start_x",
             "start_y",
             "end_x",
