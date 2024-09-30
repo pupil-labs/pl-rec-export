@@ -543,9 +543,9 @@ def _process_fixations(
         columns={"start_t": "start timestamp [ns]", "end_t": "end timestamp [ns]"},
         inplace=True,
     )
-    events["duration [ms]"] = (
-        events["end timestamp [ns]"] - events["start timestamp [ns]"]
-    ) // 1_000_000
+    events["duration [ms]"] = round(
+        (events["end timestamp [ns]"] - events["start timestamp [ns]"]) / 1e6
+    )
 
     # Saccades
     gap_events = events.query("label == 'gap'").reset_index(drop=True)
