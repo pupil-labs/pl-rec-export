@@ -3,8 +3,8 @@ from typing import Generator, Union
 
 import numpy as np
 
-from pupil_labs.neon_recording.stream.imu import imu_pb2
-from pupil_labs.neon_recording.stream.imu.imu_stream import parse_neon_imu_raw_packets
+from pupil_labs.neon_recording import imu_pb2
+from pupil_labs.neon_recording.imu import IMU
 
 
 imu_dtype = np.dtype(
@@ -46,7 +46,7 @@ def imu_packets_to_numpy(packets: Generator[imu_pb2.ImuPacket, None, None]):
 
 def raw_imu_file_to_packets(file_path: Union[str, Path]):
     with Path(file_path).open("rb") as handle:
-        yield from parse_neon_imu_raw_packets(handle.read())
+        yield from IMU._parse_neon_imu_raw_packets(handle.read())
 
 
 def raw_imu_file_to_numpy(file_path: Union[str, Path]):
