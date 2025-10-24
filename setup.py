@@ -39,7 +39,7 @@ INSTALL_REQUIRES = [
     "semver",
     "scikit-learn",
     "tqdm",
-    "pupil-labs-neon-recording",
+    "pupil-labs-neon-recording>=2.0.0",
 ]
 TESTS_REQUIRE = ["pytest"]
 
