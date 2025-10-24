@@ -42,6 +42,10 @@ tell you how during the install or when running the script.
 
 ## Changelog
 
+### 1.0.12
+
+- Update `pupil_labs_neon_recording` dependency
+
 ### 1.0.11
 
 - Add support for exporting saccade data
