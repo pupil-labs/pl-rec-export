@@ -4,7 +4,7 @@ from typing import Generator, Union
 import numpy as np
 
 from pupil_labs.neon_recording.timeseries.imu import imu_pb2
-from pupil_labs.neon_recording.timeseries.imu.imu_stream import parse_neon_imu_raw_packets
+from pupil_labs.neon_recording.timeseries.imu.imu_timeseries import parse_neon_imu_raw_packets
 
 
 imu_dtype = np.dtype(
