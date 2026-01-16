@@ -162,9 +162,7 @@ def process_recording(
             blink_thread.start()
         if fixations:
             fixation_thread.start()
-        if blinks:
-            blink_thread.join()
-            fixation_thread.join()
+
     except FileNotFoundError:
         logging.exception(
             "Did not encounter expected files. "
