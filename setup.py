@@ -38,6 +38,7 @@ INSTALL_REQUIRES = [
     "tabulate",
     "semver",
     "scikit-learn",
+    "setuptools==75; python_version >= '3.10'",
     "tqdm",
     "pupil-labs-neon-recording>=2.0.0",
 ]
